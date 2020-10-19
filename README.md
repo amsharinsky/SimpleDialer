@@ -20,7 +20,7 @@ Databases that can be used:
  - MariaDB 10.3.X
 
 ## Usage
-  1. Configuration files
+ ### 1. Configuration files
     -/config/asteriks.json
 
 | Param name              | Param description             | Type    | Example     |
@@ -58,6 +58,31 @@ Databases that can be used:
 | ----------------------- | ---------------------------------------------------- | -------- |-------- |
 | Ip                      | Server ip address where you want to start dialer service| String  | 192.168.1.3|
 | Port                    | Port of dialer service                               | String  | 8080     |
+
+### Make dialer tables
+
+* For Postgresql
+   
+```typescript
+  CREATE TABLE <Scheme>.dialer_clients (
+  
+	case_name varchar NOT NULL,
+	project_id varchar NOT NULL,
+	phone_number varchar NOT NULL,
+	priority int8 NOT NULL DEFAULT 1,
+	utc varchar NULL,
+	used bool NOT NULL DEFAULT false,
+	recall bool NOT NULL DEFAULT false,
+	allowed_start varchar NOT NULL DEFAULT '00:00:00'::character varying,
+	allowed_stop varchar NOT NULL DEFAULT '00:00:00'::character varying,
+	checked bool NOT NULL DEFAULT false,
+	recall_period varchar NULL,
+	chime_time timestamp NULL,
+	created timestamp NOT NULL DEFAULT now(),
+	id serial NOT NULL
+  
+);
+```
 
 
 
