@@ -25,8 +25,8 @@ Databases that can be used:
 
   - [Install](#install)
     - [DATABASE](#DATABASE)
-      - [Make dialer tables](#Make-dialer-tables)
-	
+      - [Create dialer tables](#Create-dialer-tables)
+      - [Create dialer cases](#Create-dialer-cases)
 
 
 
@@ -41,7 +41,7 @@ Databases that can be used:
 | Username                | AMI username            | String  | User        |   
 | Password                | AMI username password   | String  | 123qwe      |  
   
-   -/config/dbconfig.json 
+    -/config/dbconfig.json 
    
 | Param name              | Param description                                                         | Type    | Example     |
 | ----------------------- | ------------------------------------------------------------------- | --------| ----------- |
@@ -56,13 +56,13 @@ Databases that can be used:
 | Max_Open_Conns          | Maximum number of open connections to the database                 | Integer | 100         |
 | Max_Idle_Conns          | Maximum number of connections in the idle connection pool           | Integer | 10          |
 
- -/config/dialer.json
+    -/config/dialer.json
  
 | Param name              | Param description                                    | Type     | Example |
 | ----------------------- | ---------------------------------------------------- | -------- |-------- |
 | loglevel                | Set loglevel. 1-ERROR.2-ERROR,INFO.3-ERROR,INFO,DEBUG | Integer  | 1       | 
   
-  -/config/http.json 
+    -/config/http.json 
 
 | Param name              | Param description                                    | Type     | Example |
 | ----------------------- | ---------------------------------------------------- | -------- |-------- |
@@ -72,7 +72,7 @@ Databases that can be used:
 
 ### DATABASE
 
-#### Make dialer tables
+#### Create dialer tables
 
 * For Postgresql
    
