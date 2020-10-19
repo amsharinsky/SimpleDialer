@@ -1,7 +1,63 @@
 # SimpleDialer
-This is alfa version.Simple dialer is a system for automatic dialing of subscribers using an asterisk.Used only by AMI.Tested on Asterisk 16.X
+This is alfa version.Simple dialer is a system for automatic dialing of subscribers using an asterisk.
+- Used only by AMI
+- Simple configuration
+- Progressive mode
+- Autoinfo mode
 
-***
+### In future releases
+- Predictive mode
+- Webphone 
+- Realtime statistics and more
+
+### Software requirements
+
+Asterisk:
+  - Asterisk 16.X
+
 Databases that can be used:
- * Postegresql 12.X
- * MariaDB 10.3.X
+ - Postegresql 12.X
+ - MariaDB 10.3.X
+
+## Usage
+  1. Configuration files
+    -/config/asteriks.json
+
+| Param name              | Param description             | Type    | Example     |
+| ----------------------- | ----------------------- | --------| --------    |
+| Ip                      | Asterisk ip address     | String  | 192.168.1.1 | 
+| Port                    | Asterisk ami port       | String  | 5038        |
+| Timeout                 | Connection timeout      | Integer | 10          |        
+| Username                | AMI username            | String  | User        |   
+| Password                | AMI username password   | String  | 123qwe      |  
+  
+   -/config/dbconfig.json 
+   
+| Param name              | Param description                                                         | Type    | Example     |
+| ----------------------- | ------------------------------------------------------------------- | --------| ----------- |
+| Driver                  | Driver for connect DB                                               | String  | pgx or mysql| 
+| Port                    | DB port                                                             | Integer | 5432        |
+| DB_Server               | DB ip address                                                       | String  | 192.168.1.2 |        
+| DB_Name                 | DB name                                                             | String  | Asterisk    |   
+| Scheme                  | Scheme name                                                         | String  | nc          |
+| Username                | Username with full  rights for the scheme                           | String  | nc_username |
+| Password                | Username password                                                   | String  | 111222      |
+| Conn_Max_Lifetime       | Maximum amount of time a connection may be reused                   | Integer | 5           | 
+| Max_Open_Conns          | Maximum number of open connections to the database                 | Integer | 100         |
+| Max_Idle_Conns          | Maximum number of connections in the idle connection pool           | Integer | 10          |
+
+ -/config/dialer.json
+ 
+| Param name              | Param description                                    | Type     | Example |
+| ----------------------- | ---------------------------------------------------- | -------- |-------- |
+| loglevel                | Set loglevel. 1-ERROR.2-ERROR,INFO.3-ERROR,INFO,DEBUG | Integer  | 1       | 
+  
+  -/config/http.json 
+
+| Param name              | Param description                                    | Type     | Example |
+| ----------------------- | ---------------------------------------------------- | -------- |-------- |
+| Ip                      | Server ip address where you want to start dialer service| String  | 192.168.1.3|
+| Port                    | Port of dialer service                               | String  | 8080     |
+
+
+
