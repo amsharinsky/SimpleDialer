@@ -26,7 +26,7 @@ Databases that can be used:
   - [Install](#install)
     - [DATABASE](#DATABASE)
       - [Make dialer tables](#Make-dialer-tables)
-
+	
 
 
 
@@ -109,3 +109,66 @@ CREATE TABLE <Scheme>.dialer_params (
 	context varchar NOT NULL DEFAULT 'default'::character varying
 );
 ```
+
+```typescript
+CREATE TABLE <Scheme>.dialer_stat (
+	id int4 NOT NULL,
+	case_name varchar NULL,
+	project_id varchar NULL,
+	phone_number varchar NULL,
+	dial_count int4 NOT NULL DEFAULT 0,
+	ended timestamp NULL,
+	state varchar NULL
+);
+```
+* For Mariadb
+
+```typescript
+CREATE TABLE `<Scheme>.dialer_clients` (
+  `case_name` varchar(100) NOT NULL,
+  `project_id` varchar(100) NOT NULL,
+  `phone_number` varchar(100) NOT NULL,
+  `priority` int(11) DEFAULT 1,
+  `utc` varchar(100) DEFAULT NULL,
+  `used` tinyint(1) NOT NULL DEFAULT 0,
+  `recall` tinyint(1) DEFAULT 0,
+  `allowed_start` varchar(100) NOT NULL DEFAULT '00:00:00',
+  `allowed_stop` varchar(100) NOT NULL DEFAULT '00:00:00',
+  `checked` tinyint(1) NOT NULL DEFAULT 0,
+  `recall_period` varchar(100) DEFAULT NULL,
+  `chime_time` timestamp NULL DEFAULT NULL,
+  `created` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8
+```
+
+```typescript
+CREATE TABLE `<Scheme>.dialer_params` (
+  `project_id` varchar(100) COLLATE utf8_estonian_ci NOT NULL,
+  `lines` int(11) NOT NULL DEFAULT 0,
+  `call_time` int(11) NOT NULL DEFAULT 20000,
+  `case_limit` int(11) NOT NULL DEFAULT 500,
+  `sort` varchar(100) COLLATE utf8_estonian_ci NOT NULL DEFAULT '2:1',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(100) COLLATE utf8_estonian_ci NOT NULL DEFAULT 'progressive',
+  `exten` varchar(100) COLLATE utf8_estonian_ci NOT NULL,
+  `context` varchar(100) COLLATE utf8_estonian_ci NOT NULL DEFAULT 'default',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_estonian_ci
+```
+
+```typescript
+CREATE TABLE `<Scheme>.dialer_stat` (
+  `id` int(11) NOT NULL,
+  `case_name` varchar(100) DEFAULT NULL,
+  `project_id` varchar(100) DEFAULT NULL,
+  `phone_number` varchar(100) DEFAULT NULL,
+  `dial_count` int(11) NOT NULL DEFAULT 0,
+  `ended` timestamp NULL DEFAULT NULL,
+  `state` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+```
+
+#### Create dialer cases
+
