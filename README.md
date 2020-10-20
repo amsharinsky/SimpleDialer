@@ -101,7 +101,7 @@ Databases that can be used:
 CREATE TABLE <Scheme>.dialer_params (
 	project_id varchar NULL,
 	lines int8 NULL,
-	call_time int8 NOT NULL DEFAULT 20,
+	dial_time int8 NOT NULL DEFAULT 20,
 	case_limit int8 NULL,
 	sort varchar NULL,
 	id bigserial NOT NULL,
@@ -148,7 +148,7 @@ CREATE TABLE `<Scheme>.dialer_clients` (
 CREATE TABLE `<Scheme>.dialer_params` (
   `project_id` varchar(100) COLLATE utf8_estonian_ci NOT NULL,
   `lines` int(11) NOT NULL DEFAULT 0,
-  `call_time` int(11) NOT NULL DEFAULT 20000,
+  `dial_time` int(11) NOT NULL DEFAULT 20000,
   `case_limit` int(11) NOT NULL DEFAULT 500,
   `sort` varchar(100) COLLATE utf8_estonian_ci NOT NULL DEFAULT '2:1',
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -191,6 +191,22 @@ CREATE TABLE `<Scheme>.dialer_stat` (
 | chime_time		  | System field |	 
 | created		  | Case creation time| 
 | id			  | System field |
+
+	-dialer_params
+	
+| Column name             | Column description          
+| ----------------------- | ----------------------- |
+| project_id              | Unique project ID        |
+| lines           	  | Maximum number of lines for simultaneous calls|       
+| dial_time               | Call time to subscriber.in milliseconds |            |   
+| case_limit              | The number of cases taken for dialing in memory | 
+| sort			  | Sorting cases. Consists of two parameters: the first parameter: 1-priority, 2-date of creation, 3-UTC.The second parameter: 1-DESC, 2-ASC. Example: 2:1 |
+| type			  | Dialer mode. progressive or autoinfo.Example: progressive |
+| exten			  | Project (exten) Number in extensions.conf|
+| context	          | Context in extensions.conf |
+
+
+
 
 #### Create dialer cases
 
