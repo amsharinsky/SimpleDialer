@@ -205,6 +205,19 @@ CREATE TABLE `<Scheme>.dialer_stat` (
 | exten			  | Project (exten) Number in extensions.conf|
 | context	          | Context in extensions.conf |
 
+	-dialer_stat
+
+| Column name             | Column description          
+| ----------------------- | ----------------------- |
+| id            	  | System field.Unique      |
+| case_name           	  | Case name.Сan be anything|       
+| project_id              | Unique project ID |            |   
+| phone_number            | Subscriber's phone number | 
+| dial_count		  | Number of calls already made | 
+| ended			  | Time of the end of the case call |
+| state			  | Call status |
+
+
 
 
 
