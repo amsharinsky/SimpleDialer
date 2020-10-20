@@ -21,17 +21,28 @@ Databases that can be used:
 
 ## Usage
 
-#
-
   - [Install](#install)
     - [DATABASE](#DATABASE)
       - [Create dialer tables](#Create-dialer-tables)
       	- [Сolumn description](#Сolumn-description)
       - [Create dialer cases](#Create-dialer-cases)
+  - [Dialer management](#Dialer-management)  
 
+### Install
+	
+- Create tables in database
+- Configure asterisk and dialer configuration files
+- Create cases for calling
+- Send Get query for start
 
+### Dialer management
+- A get request is used to control the dialer
+- Parameters used: 
+   action  and projectid where action can be start or stop
 
- ### 1. Configuration files
+Example:http://127.0.0.1:8080/?action=start&projectid=test
+
+ ### Configuration files
     -/config/asteriks.json
 
 | Param name              | Param description             | Type    | Example     |
@@ -71,7 +82,7 @@ Databases that can be used:
 | Port                    | Port of dialer service                               | String  | 8080     |
 
 
-### DATABASE
+### Database
 
 #### Create dialer tables
 
