@@ -22,7 +22,7 @@ Databases that can be used:
 ## Usage
 
   - [Install](#install)
-    - [DATABASE](#DATABASE)
+    - [Database](#Database)
       - [Create dialer tables](#Create-dialer-tables)
       	- [Сolumn description](#Сolumn-description)
       - [Create dialer cases](#Create-dialer-cases)
