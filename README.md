@@ -26,6 +26,7 @@ Databases that can be used:
   - [Install](#install)
     - [DATABASE](#DATABASE)
       - [Create dialer tables](#Create-dialer-tables)
+      	- [Сolumn description](#Сolumn-description)
       - [Create dialer cases](#Create-dialer-cases)
 
 
@@ -85,11 +86,11 @@ Databases that can be used:
 	priority int8 NOT NULL DEFAULT 1,
 	utc varchar NULL,
 	used bool NOT NULL DEFAULT false,
-	recall bool NOT NULL DEFAULT false,
+	call_back bool NOT NULL DEFAULT false,
 	allowed_start varchar NOT NULL DEFAULT '00:00:00'::character varying,
 	allowed_stop varchar NOT NULL DEFAULT '00:00:00'::character varying,
 	checked bool NOT NULL DEFAULT false,
-	recall_period varchar NULL,
+	call_back_period varchar NULL,
 	chime_time timestamp NULL,
 	created timestamp NOT NULL DEFAULT now(),
 	id serial NOT NULL
@@ -131,11 +132,11 @@ CREATE TABLE `<Scheme>.dialer_clients` (
   `priority` int(11) DEFAULT 1,
   `utc` varchar(100) DEFAULT NULL,
   `used` tinyint(1) NOT NULL DEFAULT 0,
-  `recall` tinyint(1) DEFAULT 0,
+  `call_back` tinyint(1) DEFAULT 0,
   `allowed_start` varchar(100) NOT NULL DEFAULT '00:00:00',
   `allowed_stop` varchar(100) NOT NULL DEFAULT '00:00:00',
   `checked` tinyint(1) NOT NULL DEFAULT 0,
-  `recall_period` varchar(100) DEFAULT NULL,
+  `call_back_period` varchar(100) DEFAULT NULL,
   `chime_time` timestamp NULL DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -169,6 +170,27 @@ CREATE TABLE `<Scheme>.dialer_stat` (
   `state` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ```
+
+### Сolumn description
+
+	-dialer_clients
+	
+| Column name             | Column description          
+| ----------------------- | ----------------------- |
+| case_name               | Case name.Сan be anything|
+| project_id              | Unique project ID       |
+| phone_number            | Subscriber's phone number      |       
+| priority                | Priority of the case. 1-maximum priority. The higher the priority, the sooner the case will call           |   
+| utc                     | Subscriber's utc. By default, the time from the server is taken   | 
+| used			  | System field.If it is set true, then the case is called|	
+| call_back		  | Allow call back case |
+| allowed_start		  | Beginning of the allowed call time of the case|			
+| allowed_stop		  | End of the allowed time for the case call |	
+| checked		  | System field |	
+| call_back_period	  | Call back period in minutes. Example: 1,1.There will be two dialing attempts with an interval of one minute.|
+| chime_time		  | System field |	 
+| created		  | Case creation time| 
+| id			  | System field |
 
 #### Create dialer cases
 
