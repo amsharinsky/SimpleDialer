@@ -1,0 +1,15 @@
+
+{
+  "Driver":"pgx",
+  "DB_Server":"192.68.1.1",
+  "Port": 5432,
+  "DB_Name":"nc",
+  "Scheme":"nc",
+  "Username":"nc",
+  "Password":"1111",
+  "Conn_Max_Lifetime": 5,
+  "Max_Open_Conns": 1000,
+  "Max_Idle_Conns": 5
+
+}
+

@@ -1,0 +1,8 @@
+{
+
+  "Ip": "192.168.1.1",
+  "Port": "5038",
+  "Timeout": 10,
+  "Username": "admin",
+  "Password": "adminAMIasterisk"
+}
