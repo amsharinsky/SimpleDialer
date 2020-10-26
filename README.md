@@ -232,5 +232,16 @@ CREATE TABLE `<Scheme>.dialer_stat` (
 
 
 
-#### Create dialer cases
+#### Add dialer cases and params(Example)
+
+INSERT INTO nc.dialer_clients
+(case_name, project_id, phone_number, priority, utc,recall, allowed_start, allowed_stop, recall_period)
+VALUES('Name', 'test', '1111', 1 , '+03.00h',true, '10:00:00', '18:00:00','1,1' );
+
+INSERT INTO nc.dialer_params
+(project_id, `lines`, call_time, case_limit, `type`, exten, context)
+VALUES('test', 0, 20000, 500,  'progressive', '2222', 'default');
+
+
+
 
