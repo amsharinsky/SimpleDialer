@@ -59,7 +59,7 @@ func (a *DialModule) Start(sql *db.DB, ami *ami.AMI, ch chan map[string]string, 
 	//a.defferedCases = a.sql.GetDifferedCases(*a.dialerParams)
 	cases := sql.GetCases(dialerParams)
 	fmt.Println(cases)
-	if dialerParams.Type == "Progressive" {
+	if dialerParams.Type == "progressive" {
 		go ami.GetCountAgents(ctx, projectid)
 	}
 	//Если есть кейсы для обзвона
