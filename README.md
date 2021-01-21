@@ -102,7 +102,7 @@ Example:http://127.0.0.1:8080/?action=start&projectid=test
 	allowed_stop varchar NOT NULL DEFAULT '00:00:00'::character varying,
 	checked bool NOT NULL DEFAULT false,
 	call_back_period varchar NULL,
-	chime_time timestamp NULL,
+	deferred_time timestamp NULL,
 	created timestamp NOT NULL DEFAULT now(),
 	id serial NOT NULL
   
@@ -148,7 +148,7 @@ CREATE TABLE `<Scheme>.dialer_clients` (
   `allowed_stop` varchar(100) NOT NULL DEFAULT '00:00:00',
   `checked` tinyint(1) NOT NULL DEFAULT 0,
   `call_back_period` varchar(100) DEFAULT NULL,
-  `chime_time` timestamp NULL DEFAULT NULL,
+  `deferred_time` timestamp NULL DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
@@ -199,7 +199,7 @@ CREATE TABLE `<Scheme>.dialer_stat` (
 | allowed_stop		  | End of the allowed time for the case call |	
 | checked		  | System field |	
 | call_back_period	  | Call back period in minutes. Example: 1,1.There will be two dialing attempts with an interval of one minute.|
-| chime_time		  | System field |	 
+| deferred_time		  | System field |	 
 | created		  | Case creation time| 
 | id			  | System field |
 
