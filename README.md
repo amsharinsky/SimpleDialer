@@ -3,7 +3,7 @@ This is alfa version.Simple dialer is a system for automatic dialing of subscrib
 - Used only by AMI
 - Simple configuration
 - Progressive mode
-- Autoinfo mode
+- Autoinforming mode
 
 ### In future releases
 - Predictive mode
@@ -212,7 +212,7 @@ CREATE TABLE `<Scheme>.dialer_stat` (
 | dial_time               | Call time to subscriber.in milliseconds |            |   
 | case_limit              | The number of cases taken for dialing in memory | 
 | sort			  | Sorting cases. Consists of two parameters: the first parameter: 1-priority, 2-date of creation, 3-UTC.The second parameter: 1-DESC, 2-ASC. Example: 2:1 |
-| type			  | Dialer mode. progressive or autoinfo.Example: progressive |
+| type			  | Dialer mode. progressive or autoinforming.Example: progressive |
 | exten			  | Project (exten) Number in extensions.conf|
 | context	          | Context in extensions.conf |
 
