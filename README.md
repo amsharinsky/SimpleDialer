@@ -3,7 +3,7 @@ This is alfa version.Simple dialer is a system for automatic dialing of subscrib
 - Used only by AMI
 - Simple configuration
 - Progressive mode
-- Autoinfo mode
+- Autoinforming mode
 
 ### In future releases
 - Predictive mode
@@ -102,7 +102,8 @@ Example:http://127.0.0.1:8080/?action=start&projectid=test
 	allowed_stop varchar NOT NULL DEFAULT '00:00:00'::character varying,
 	checked bool NOT NULL DEFAULT false,
 	call_back_period varchar NULL,
-	chime_time timestamp NULL,
+	deferred_time timestamp NULL,
+	deferred_done bool NOT NULL DEFAULT false,
 	created timestamp NOT NULL DEFAULT now(),
 	id serial NOT NULL
   
@@ -147,8 +148,9 @@ CREATE TABLE `<Scheme>.dialer_clients` (
   `allowed_start` varchar(100) NOT NULL DEFAULT '00:00:00',
   `allowed_stop` varchar(100) NOT NULL DEFAULT '00:00:00',
   `checked` tinyint(1) NOT NULL DEFAULT 0,
+  `deferred_done` tinyint(1) NOT NULL DEFAULT 0,
   `call_back_period` varchar(100) DEFAULT NULL,
-  `chime_time` timestamp NULL DEFAULT NULL,
+  `deferred_time` timestamp NULL DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
@@ -199,7 +201,8 @@ CREATE TABLE `<Scheme>.dialer_stat` (
 | allowed_stop		  | End of the allowed time for the case call |	
 | checked		  | System field |	
 | call_back_period	  | Call back period in minutes. Example: 1,1.There will be two dialing attempts with an interval of one minute.|
-| chime_time		  | System field |	 
+| deferred_time		  | System field |
+| deferred_done		  | Is the callback of the deferred case completed|	
 | created		  | Case creation time| 
 | id			  | System field |
 
@@ -212,7 +215,7 @@ CREATE TABLE `<Scheme>.dialer_stat` (
 | dial_time               | Call time to subscriber.in milliseconds |            |   
 | case_limit              | The number of cases taken for dialing in memory | 
 | sort			  | Sorting cases. Consists of two parameters: the first parameter: 1-priority, 2-date of creation, 3-UTC.The second parameter: 1-DESC, 2-ASC. Example: 2:1 |
-| type			  | Dialer mode. progressive or autoinfo.Example: progressive |
+| type			  | Dialer mode. progressive or autoinforming.Example: progressive |
 | exten			  | Project (exten) Number in extensions.conf|
 | context	          | Context in extensions.conf |
 
