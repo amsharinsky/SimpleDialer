@@ -103,6 +103,7 @@ Example:http://127.0.0.1:8080/?action=start&projectid=test
 	checked bool NOT NULL DEFAULT false,
 	call_back_period varchar NULL,
 	deferred_time timestamp NULL,
+	deferred_done bool NOT NULL DEFAULT false,
 	created timestamp NOT NULL DEFAULT now(),
 	id serial NOT NULL
   
@@ -147,6 +148,7 @@ CREATE TABLE `<Scheme>.dialer_clients` (
   `allowed_start` varchar(100) NOT NULL DEFAULT '00:00:00',
   `allowed_stop` varchar(100) NOT NULL DEFAULT '00:00:00',
   `checked` tinyint(1) NOT NULL DEFAULT 0,
+  `deferred_done` tinyint(1) NOT NULL DEFAULT 0,
   `call_back_period` varchar(100) DEFAULT NULL,
   `deferred_time` timestamp NULL DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -199,7 +201,8 @@ CREATE TABLE `<Scheme>.dialer_stat` (
 | allowed_stop		  | End of the allowed time for the case call |	
 | checked		  | System field |	
 | call_back_period	  | Call back period in minutes. Example: 1,1.There will be two dialing attempts with an interval of one minute.|
-| deferred_time		  | System field |	 
+| deferred_time		  | System field |
+| deferred_done		  | Is the callback of the deferred case completed|	
 | created		  | Case creation time| 
 | id			  | System field |
 
