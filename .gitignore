@@ -10,6 +10,6 @@ logs/
 .idea/
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-configs/
+configs/*
 # Dependency directories (remove the comment below to include it)
 # vendor/
