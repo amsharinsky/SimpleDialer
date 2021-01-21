@@ -3,15 +3,14 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"strconv"
-	"strings"
-	"time"
-
 	"github.com/amsharinsky/SimpleDialer/app/internal/config"
 	log "github.com/amsharinsky/SimpleDialer/app/internal/logger"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
+	"strconv"
+	"strings"
+	"time"
 )
 
 type DB struct {
@@ -37,13 +36,14 @@ func (a *DB) ConnectDB() error {
 	}
 
 	conn, err := sqlx.Open(cfg.Driver, conf)
-	conn.SetMaxOpenConns(cfg.MaxOpenConns)
-	conn.SetConnMaxLifetime(cfg.ConnMaxLifetime * time.Minute)
-	conn.SetMaxIdleConns(cfg.MaxIdleConns)
+
 	if err != nil {
 		log.MakeLog(1, err)
 		return err
 	}
+	conn.SetMaxOpenConns(cfg.MaxOpenConns)
+	conn.SetConnMaxLifetime(cfg.ConnMaxLifetime * time.Minute)
+	conn.SetMaxIdleConns(cfg.MaxIdleConns)
 	a.DBConn = conn
 	return nil
 }
@@ -218,19 +218,49 @@ func (a *DB) GetCountCases(projectid string) int {
 
 }
 
-func (a *DB) GetDifferedCases(dialerParams DialerParams) map[int]map[string]interface{} {
+type DeferredCases struct {
+	Id           int
+	Casename     string         `db:"case_name"`
+	PhoneNumber  string         `db:"phone_number"`
+	Utc          sql.NullString `db:"utc"`
+	DeferredTime string
+}
+
+func (a *DB) GetDeferredCases(dialerParams DialerParams) map[int]map[string]interface{} {
+
 	casedata := make(map[int]map[string]interface{}, 500)
 	order := a.SortCases(dialerParams.Sort)
-	sqlStatement := "SELECT id,case_name,phone_number,utc,chime_time FROM " + a.Scheme + ".dialer_clients WHERE project_id=$1 and chime_time is NOT NULL order by $3  LIMIT $2"
-	rows, err := a.DBConn.Queryx(sqlStatement, dialerParams.ProjectId, dialerParams.CaseLimit, order)
+	limit := strconv.Itoa(dialerParams.CaseLimit)
+	sqlStatement := "SELECT id,case_name,phone_number,utc,deferred_time FROM " + a.Scheme + ".dialer_clients WHERE project_id='" + dialerParams.ProjectId + "' and deferred_time is NOT NULL and deferred_time !='' and deferred_done = false  order by " + order + " LIMIT " + limit
+	rows, err := a.DBConn.Queryx(sqlStatement)
 	if err != nil {
 		log.MakeLog(1, err)
 	}
 	for rows.Next() {
-		res := make(map[string]interface{})
-		rows.MapScan(res)
-		casedata[res["id"].(int)] = res
+		var bb DeferredCases
+		rows.Scan(&bb.Id, &bb.Casename, &bb.PhoneNumber, &bb.Utc, &bb.DeferredTime)
+		res := map[string]interface{}{"id": bb.Id, "case_name": bb.Casename, "phone_number": bb.PhoneNumber, "utc": bb.Utc, "deferredTime": bb.DeferredTime}
+		res["callback_count"] = 0
+		res["dial_count"] = 0
+		id := res["id"].(int)
+		casedata[id] = res
+	}
+
+	log.MakeLog(2, "Get Deferred Cases for project "+dialerParams.ProjectId)
+	log.MakeLog(3, sqlStatement)
+	log.MakeLog(3, casedata)
+	defer rows.Close()
+	return casedata
+
+}
+
+func (a *DB) SetDeferredDone(id int) {
+
+	uuid := strconv.Itoa(id)
+	sqlStatement := "UPDATE " + a.Scheme + ".dialer_clients SET deferred_done=true where id='" + uuid + "'"
+	_, err := a.DBConn.Exec(sqlStatement)
+	if err != nil {
+		log.MakeLog(1, err)
 	}
 	log.MakeLog(3, sqlStatement)
-	return casedata
 }

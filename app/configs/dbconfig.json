@@ -1,7 +1,7 @@
 
 {
   "Driver":"pgx",
-  "DB_Server":"192.68.1.1",
+  "DB_Server":"84.201.157.81",
   "Port": 5432,
   "DB_Name":"nc",
   "Scheme":"nc",

@@ -31,7 +31,7 @@ type DialModule struct {
 	ch            chan map[string]string
 	countCase     int
 	ticker        *time.Ticker
-	defferedCases map[int]map[string]interface{}
+	deferredCases map[int]map[string]interface{}
 }
 
 func New() *DialModule {
@@ -56,10 +56,10 @@ func (a *DialModule) Start(sql *db.DB, ami *ami.AMI, ch chan map[string]string, 
 		log.MakeLog(2, loginfo)
 		return
 	}
-	//a.defferedCases = a.sql.GetDifferedCases(*a.dialerParams)
+	a.deferredCases = a.sql.GetDeferredCases(*a.dialerParams)
 	cases := sql.GetCases(dialerParams)
 	fmt.Println(cases)
-	if dialerParams.Type == "Progressive" {
+	if dialerParams.Type == "progressive" {
 		go ami.GetCountAgents(ctx, projectid)
 	}
 	//Если есть кейсы для обзвона
@@ -113,12 +113,12 @@ func (a *DialModule) dial(cases map[int]map[string]interface{}) {
 						//Проверяем попадает ли кейс в разрешенное время обзвона
 						if allowStart <= timeNow && timeNow <= allowStop || allowStart == "00:00:00" && allowStop == "00:00:00" {
 							//Если попало то смотрим режим и делаем проверки согласно режиму
-							if a.dialerParams.Type != "autoinformator" {
+							if a.dialerParams.Type != "autoinforming" {
 								av := a.countAgents["agentCount"]["Available"]
 								avail, _ := strconv.Atoi(av)
 								a.Check = a.countLine < a.dialerParams.Lines && !cases[key]["used"].(bool) && avail != 0 && a.countLine <= avail
 							}
-							if a.dialerParams.Type == "autoinformator" {
+							if a.dialerParams.Type == "autoinforming" {
 								a.Check = a.countLine < a.dialerParams.Lines && !cases[key]["used"].(bool)
 							}
 							//Если проверка параметров прошла то звоним
@@ -140,14 +140,22 @@ func (a *DialModule) dial(cases map[int]map[string]interface{}) {
 			}
 
 		}
-		if len(cases) <= 0 && a.countCase > 0 {
+		if len(cases) <= 0 && a.countCase != 0 {
 			cases = a.sql.GetCases(*a.dialerParams)
-			a.countCase = a.countCase - 1
+			if len(cases) <= 0 {
+				a.countCase = 0
+			}
 		}
 		if len(a.callbackCases) > 0 {
 			a.callback()
 		}
-		if len(cases) <= 0 && a.countCase <= 0 && len(a.callbackCases) <= 0 {
+
+		if len(a.deferredCases) > 0 {
+
+			a.deferredDial()
+
+		}
+		if len(cases) <= 0 && a.countCase <= 0 && len(a.callbackCases) <= 0 && len(a.deferredCases) <= 0 {
 			log.MakeLog(2, "Cases are over.The command to stop calling has been sent")
 			a.ch <- map[string]string{
 				"action":    "stop",
@@ -197,7 +205,7 @@ func (a *DialModule) callback() {
 					allowStop := a.callbackCases[key]["allowed_stop"].(string)
 					if allowStart <= timeNow && timeNow <= allowStop && a.callbackCases[key]["callbackTime"].(string) <= timeNow || allowStart == "00:00:00" && allowStop == "00:00:00" {
 						//Звоним если есть свободное кол-во линий
-						if a.dialerParams.Type != "autoinformator" {
+						if a.dialerParams.Type != "autoinforming" {
 							avail, _ := strconv.Atoi(a.countAgents["agentCount"]["Available"])
 							a.Check = a.countLine < a.dialerParams.Lines && avail != 0 && a.countLine <= avail && a.callbackCases[key]["callback_count"].(int) < 1
 						} else {
@@ -264,12 +272,51 @@ func (a *DialModule) callback() {
 	}
 }
 
-func getTime(utc string, recallMinute time.Duration, defferedCall bool) string {
+func (a *DialModule) deferredDial() {
+	var caseTime string
+	var timeNow string
+	for key, value := range a.deferredCases {
+		a.sql.SetDeferredDone(key)
+		if a.deferredCases[key]["utc"].(sql.NullString).Valid {
+			timeNow = getTime(a.deferredCases[key]["utc"].(sql.NullString).String, 0, true)
+		} else {
+			timeNow = getTime("", 0, true)
+			caseTime = a.deferredCases[key]["deferredTime"].(string)
+		}
+		if caseTime <= timeNow {
+			if a.dialerParams.Type != "autoinforming" {
+				av := a.countAgents["agentCount"]["Available"]
+				avail, _ := strconv.Atoi(av)
+				a.Check = a.countLine < a.dialerParams.Lines && avail != 0 && a.countLine <= avail
+			}
+			if a.dialerParams.Type == "autoinforming" {
+				a.Check = a.countLine < a.dialerParams.Lines
+			}
+			//Если проверка параметров прошла то звоним
+			if a.Check {
+				fmt.Println("def_dial", value["phone_number"].(string))
+
+				//Занимаем линию
+				a.countLine++
+
+				a.deferredCases[key]["dial_count"] = a.deferredCases[key]["dial_count"].(int) + 1
+				a.Ami.MakeCall(value["phone_number"].(string), a.dialerParams.CallTime, a.dialerParams.Exten, a.dialerParams.Context)
+				delete(a.deferredCases, key)
+
+			}
+
+		}
+
+	}
+
+}
+
+func getTime(utc string, recallMinute time.Duration, deferredCall bool) string {
 
 	var retTime string
 	var format string
-	if defferedCall {
-		format = "2006.01.02 15:04:05"
+	if deferredCall {
+		format = "2006-01-02 15:04:05"
 	} else {
 		format = "15:04:05"
 	}
@@ -290,9 +337,9 @@ func (a *DialModule) tickers() map[int]map[string]interface{} {
 	a.ticker = time.NewTicker(time.Second * 30)
 	select {
 	case <-a.ticker.C:
-		a.defferedCases = a.sql.GetDifferedCases(*a.dialerParams)
-		if len(a.defferedCases) > 0 {
-			return a.defferedCases
+		a.deferredCases = a.sql.GetDeferredCases(*a.dialerParams)
+		if len(a.deferredCases) > 0 {
+			return a.deferredCases
 		}
 	default:
 	}
